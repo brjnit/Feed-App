@@ -38,7 +38,7 @@ final class RemoteFeedLoaderTests: XCTestCase {
         var capturedError = [RemoteFeedLoader.Error]()
         sut.load { capturedError.append($0)}
         let clientError =  NSError(domain: "Test", code: 0)
-        client.completions[0](clientError)
+        client.complete(with: clientError)
         
         XCTAssertEqual(capturedError, [.connectivity])
     }
@@ -59,7 +59,11 @@ final class RemoteFeedLoaderTests: XCTestCase {
         func call(request: URLRequest, completion: @escaping (Error)-> Void ) {
             completions.append(completion)
             requestURLs.append(request)
-           
+            
+        }
+        
+        func complete(with error: NSError, at index: Int = 0) {
+            completions[index](error)
         }
     }
 
